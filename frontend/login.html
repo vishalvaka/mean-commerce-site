@@ -2,10 +2,49 @@
 <html>
 <head>
     <title>Login Page</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.querySelector('form');
+
+            loginForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(loginForm);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+
+                fetch('/submit-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Login failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Handle successful login here, e.g., redirect or update UI
+                    console.log('Login Successful:', data);
+                    window.location.href = '/successPage'; // Redirect to another page on success
+                })
+                .catch((error) => {
+                    // Handle login errors here
+                    console.error('Error:', error);
+                    alert('Login failed: Invalid username or password.');
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <h2>Login Page</h2>
-    <form action="/submit-login" method="post">
+    <form>
         <div>
             <label for="username">Username:</label>
             <input type="text" id="username" name="username">
@@ -22,5 +61,6 @@
     <div>
         <button onclick="window.location.href='/register';">Register</button>
     </div>
+
 </body>
 </html>
